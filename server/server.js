@@ -24,9 +24,29 @@ io.on('connection', (socket) => {
   socket.on('createMessage', (message) => {
     console.log("Create Message", message);
 
+
+    socket.emit('newMessage', {
+      from: 'admin',
+      text: "Welcome to the chat app!",
+      createAt: new Date().getTime()
+    })
+    
+    socket.broadcast.emit('newMessage', {
+      from: 'admin',
+      text: "New user joined the chatroom!",
+      createAt: new Date().getTime()
+    })
+
     // io.emit emits a message to EVERY single connection!
     // socket.emit sends just to the single socket.
-    io.emit('newMessage', {
+    // io.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // })
+
+    // Emit, but sends to everyone except for "this" socket
+    socket.broadcast.emit('newMessage', {
       from: message.from,
       text: message.text,
       createdAt: new Date().getTime()
