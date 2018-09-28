@@ -12,20 +12,7 @@
   </p>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    // io is available because we loaded this file. 
-    // Calling it initiates a request to the server, and keeps the connection open.
-    // 'socket' variable used to listen, and send data to the server.
-    var socket = io();
-    
-    socket.on('connect', () => {
-      console.log("Connected to server.");
-    });
-
-    socket.on('disconnect', () => {
-      console.log("Disconnected from server");
-    })
-  </script>
+  <script src = "/js/index.js"></script>
 </body>
 
 </html>
