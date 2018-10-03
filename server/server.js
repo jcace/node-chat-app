@@ -7,7 +7,8 @@ const port = process.env.PORT || 3000;
 
 
 const {
-  generateMessage
+  generateMessage,
+  generateLocationMessage
 } = require('./utils/message');
 
 const app = express();
@@ -22,7 +23,7 @@ io.on('connection', (socket) => {
 
   socket.emit('newMessage', generateMessage('Admin', "Welcome to the chat app!"));
 
-    // Emit, but sends to everyone except for "this" socket
+  // Emit, but sends to everyone except for "this" socket
   socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user has joined the chatroom'));
 
   socket.on('createMessage', (message, callback) => {
@@ -34,6 +35,11 @@ io.on('connection', (socket) => {
 
     // Callback - an "acknowledgement" sent back to the client
     callback("yasss");
+  });
+
+  socket.on('createLocationMessage', (coords) => {
+    io.emit('newLocationMessage',
+      generateLocationMessage('Admin', coords.latitude, coords.longitude));
   });
 
   socket.on('disconnect', () => {
