@@ -5,6 +5,11 @@ const socketIO = require('socket.io');
 const http = require('http');
 const port = process.env.PORT || 3000;
 
+
+const {
+  generateMessage
+} = require('./utils/message');
+
 const app = express();
 const server = http.createServer(app);
 
@@ -15,42 +20,20 @@ var io = socketIO(server);
 io.on('connection', (socket) => {
   console.log("New user connected");
 
-  socket.emit('newMessage', {
-    from: "Json",
-    text: "Hey man, whats up",
-    createAt: 123,
-  });
+  socket.emit('newMessage', generateMessage('Admin', "Welcome to the chat app!"));
 
-  socket.on('createMessage', (message) => {
+    // Emit, but sends to everyone except for "this" socket
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user has joined the chatroom'));
+
+  socket.on('createMessage', (message, callback) => {
     console.log("Create Message", message);
-
-
-    socket.emit('newMessage', {
-      from: 'admin',
-      text: "Welcome to the chat app!",
-      createAt: new Date().getTime()
-    })
-    
-    socket.broadcast.emit('newMessage', {
-      from: 'admin',
-      text: "New user joined the chatroom!",
-      createAt: new Date().getTime()
-    })
+    io.emit('newMessage', generateMessage(message.from, message.text));
 
     // io.emit emits a message to EVERY single connection!
     // socket.emit sends just to the single socket.
-    // io.emit('newMessage', {
-    //   from: message.from,
-    //   text: message.text,
-    //   createdAt: new Date().getTime()
-    // })
 
-    // Emit, but sends to everyone except for "this" socket
-    socket.broadcast.emit('newMessage', {
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    })
+    // Callback - an "acknowledgement" sent back to the client
+    callback("yasss");
   });
 
   socket.on('disconnect', () => {
@@ -61,4 +44,3 @@ io.on('connection', (socket) => {
 app.use(express.static(publicPath));
 
 server.listen(port, () => console.log(`App listening on ${port}!`));
-
