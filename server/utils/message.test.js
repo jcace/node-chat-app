@@ -12,8 +12,8 @@ describe('generateMessage', () => {
 
     var message = generateMessage(from, text);
 
-    expect(message.createdAt).toBeA('number');
-    expect(message).toInclude({
+    expect(typeof message.createdAt).toBe('number');
+    expect(message).toMatchObject({
       from,
       text
     });
@@ -31,7 +31,7 @@ describe('generateLocationMessage', () => {
 
     expect(message.from).toBe('Json');
     expect(message.url).toBe('https://www.google.com/maps?q=10,-10');
-    expect(message.createdAt).toBeA('number');
+    expect(typeof message.createdAt).toBe('number');
 
   })
 })
